@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vuetify Theme Editor</title>
+  <meta charset="utf8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="description" content="A theme editor for Vuetify that allows you to quickly create a theme for both dark and light mode.">
+  
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <v-app>
+      <v-main>
+        <v-row no-gutters>
+          <v-col
+            cols="12"
+            md="6"
+          >
+            <v-card
+              dark
+              tile
+              flat
+              class="pa-4"
+              :style="{
+                'height': isMobile ? '' : '100vh',
+                'overflow-y': 'auto',
+              }"
+            >
+              <h1 class="text-center text-h3 mb-4">Dark Mode</h1>
+              <p>Copy and paste these options into your Vuetify dark theme configuration:</p>
+              <pre
+                class="mb-4"
+                style="white-space: pre-wrap;"
+              >{{ formatTheme(darkTheme) }}</pre>
+              <div class="text-center mb-4">
+                <v-btn
+                  color="primary"
+                  @click="copyTheme(darkTheme)"
+                >
+                  Copy
+                </v-btn>
+              </div>
+              <v-row
+                no-gutters
+                justify="center"
+                :style="{
+                  'flex-direction': isMobile ? 'column' : 'row',
+                }"
+              >
+                <div
+                  class="mb-4 text-center"
+                  :class="{ 'mr-4': !isMobile }"
+                >
+                  <v-btn :color="darkTheme.primary">
+                    Primary
+                  </v-btn>
+                </div>
+                <div
+                  class="mb-4 text-center"
+                  :class="{ 'mr-4': !isMobile }"
+                >
+                  <v-btn :color="darkTheme.secondary">
+                    Secondary
+                  </v-btn>
+                </div>
+                <div class="mb-4 text-center">
+                  <v-btn :color="darkTheme.accent">
+                    Accent
+                  </v-btn>
+                </div>
+              </v-row>
+              <v-row class="mx-n2 mt-n2 mb-2">
+                <v-col
+                  cols="12"
+                  md="3"
+                  class="pa-2"
+                >
+                  <v-alert
+                    class="mb-0"
+                    :color="darkTheme.info"
+                  >
+                    Info
+                  </v-alert>
+                </v-col>
+                <v-col
+                  cols="12"
+                  md="3"
+                  class="pa-2"
+                >
+                  <v-alert
+                    class="mb-0"
+                    :color="darkTheme.success"
+                  >
+                    Success
+                  </v-alert>
+                </v-col>
+                <v-col
+                  cols="12"
+                  md="3"
+                  class="pa-2"
+                >
+                  <v-alert
+                    class="mb-0"
+                    :color="darkTheme.warning"
+                  >
+                    Warning
+                  </v-alert>
+                </v-col>
+                <v-col
+                  cols="12"
+                  md="3"
+                  class="pa-2"
+                >
+                  <v-alert
+                    class="mb-0"
+                    :color="darkTheme.error"
+                  >
+                    Error
+                  </v-alert>
+                </v-col>
+              </v-row>
+              <v-select
+                v-model="inputStyle"
+                label="Input Style"
+                hide-details
+                class="mb-4"
+                :items="inputStyles"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-select>
+              <v-checkbox
+                v-model="darkTheme.useCustomPrimary"
+                label="Use Custom Primary"
+                hide-details
+                class="mb-4 mt-0"
+                :color="darkTheme.primary"
+              ></v-checkbox>
+              <v-select
+                v-model="darkTheme.primary"
+                v-show="!darkTheme.useCustomPrimary"
+                label="Primary"
+                item-text="name"
+                item-value="value"
+                prepend-icon="mdi-numeric-1-circle"
+                :color="darkTheme.primary"
+                :items="colors"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-select>
+              <v-text-field
+                v-model="darkTheme.primary"
+                v-show="darkTheme.useCustomPrimary"
+                label="Primary"
+                prepend-icon="mdi-numeric-1-circle"
+                :color="darkTheme.primary"
+                :rules="colorRules"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-text-field>
+              <v-checkbox
+                v-model="darkTheme.useCustomSecondary"
+                label="Use Custom Secondary"
+                hide-details
+                class="mb-4 mt-0"
+                :color="darkTheme.secondary"
+              ></v-checkbox>
+              <v-select
+                v-model="darkTheme.secondary"
+                v-show="!darkTheme.useCustomSecondary"
+                label="Secondary"
+                item-text="name"
+                item-value="value"
+                prepend-icon="mdi-numeric-2-circle"
+                :color="darkTheme.secondary"
+                :items="colors"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-select>
+              <v-text-field
+                v-model="darkTheme.secondary"
+                v-show="darkTheme.useCustomSecondary"
+                label="Secondary"
+                prepend-icon="mdi-numeric-2-circle"
+                :color="darkTheme.secondary"
+                :rules="colorRules"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-text-field>
+              <v-checkbox
+                v-model="darkTheme.useCustomAccent"
+                label="Use Custom Accent"
+                hide-details
+                class="mb-4 mt-0"
+                :color="darkTheme.accent"
+              ></v-checkbox>
+              <v-select
+                v-model="darkTheme.accent"
+                v-show="!darkTheme.useCustomAccent"
+                label="Accent"
+                item-text="name"
+                item-value="value"
+                prepend-icon="mdi-numeric-3-circle"
+                :color="darkTheme.accent"
+                :items="colors"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-select>
+              <v-text-field
+                v-model="darkTheme.accent"
+                v-show="darkTheme.useCustomAccent"
+                label="Accent"
+                prepend-icon="mdi-numeric-3-circle"
+                :color="darkTheme.accent"
+                :rules="colorRules"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-text-field>
+              <v-checkbox
+                v-model="darkTheme.useCustomInfo"
+                label="Use Custom Info"
+                hide-details
+                class="mb-4 mt-0"
+                :color="darkTheme.info"
+              ></v-checkbox>
+              <v-select
+                v-model="darkTheme.info"
+                v-show="!darkTheme.useCustomInfo"
+                label="Info"
+                item-text="name"
+                item-value="value"
+                prepend-icon="mdi-information"
+                :color="darkTheme.info"
+                :items="colors"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-select>
+              <v-text-field
+                v-model="darkTheme.info"
+                v-show="darkTheme.useCustomInfo"
+                label="Info"
+                prepend-icon="mdi-information"
+                :color="darkTheme.info"
+                :rules="colorRules"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-text-field>
+              <v-checkbox
+                v-model="darkTheme.useCustomSuccess"
+                label="Use Custom Success"
+                hide-details
+                class="mb-4 mt-0"
+                :color="darkTheme.success"
+              ></v-checkbox>
+              <v-select
+                v-model="darkTheme.success"
+                v-show="!darkTheme.useCustomSuccess"
+                label="Success"
+                item-text="name"
+                item-value="value"
+                prepend-icon="mdi-check-circle"
+                :color="darkTheme.success"
+                :items="colors"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-select>
+              <v-text-field
+                v-model="darkTheme.success"
+                v-show="darkTheme.useCustomSuccess"
+                label="Success"
+                prepend-icon="mdi-check-circle"
+                :color="darkTheme.success"
+                :rules="colorRules"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-text-field>
+              <v-checkbox
+                v-model="darkTheme.useCustomWarning"
+                label="Use Custom Warning"
+                hide-details
+                class="mb-4 mt-0"
+                :color="darkTheme.warning"
+              ></v-checkbox>
+              <v-select
+                v-model="darkTheme.warning"
+                v-show="!darkTheme.useCustomWarning"
+                label="Warning"
+                item-text="name"
+                item-value="value"
+                prepend-icon="mdi-alert"
+                :color="darkTheme.warning"
+                :items="colors"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-select>
+              <v-text-field
+                v-model="darkTheme.warning"
+                v-show="darkTheme.useCustomWarning"
+                label="Warning"
+                prepend-icon="mdi-alert"
+                :color="darkTheme.warning"
+                :rules="colorRules"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-text-field>
+              <v-checkbox
+                v-model="darkTheme.useCustomError"
+                label="Use Custom Error"
+                hide-details
+                class="mb-4 mt-0"
+                :color="darkTheme.error"
+              ></v-checkbox>
+              <v-select
+                v-model="darkTheme.error"
+                v-show="!darkTheme.useCustomError"
+                label="Error"
+                item-text="name"
+                item-value="value"
+                prepend-icon="mdi-alert-octagon"
+                :color="darkTheme.error"
+                :items="colors"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-select>
+              <v-text-field
+                v-model="darkTheme.error"
+                v-show="darkTheme.useCustomError"
+                label="Error"
+                prepend-icon="mdi-alert-octagon"
+                :color="darkTheme.error"
+                :rules="colorRules"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-text-field>
+            </v-card>
+          </v-col>
+          <v-col
+            cols="12"
+            md="6"
+          >
+            <v-card
+              light
+              tile
+              flat
+              class="pa-4"
+              :style="{
+                'height': isMobile ? '' : '100vh',
+                'overflow-y': 'auto',
+              }"
+            >
+              <h1 class="text-center text-h3 mb-4">Light Mode</h1>
+              <p>Copy and paste these options into your Vuetify light theme configuration:</p>
+              <pre
+                class="mb-4"
+                style="white-space: pre-wrap;"
+              >{{ formatTheme(lightTheme) }}</pre>
+              <div class="text-center mb-4">
+                <v-btn
+                  color="primary"
+                  @click="copyTheme(lightTheme)"
+                >
+                  Copy
+                </v-btn>
+              </div>
+              <v-row
+                no-gutters
+                justify="center"
+                :style="{
+                  'flex-direction': isMobile ? 'column' : 'row',
+                }"
+              >
+                <div
+                  class="mb-4 text-center"
+                  :class="{ 'mr-4': !isMobile }"
+                >
+                  <v-btn
+                    dark
+                    :color="lightTheme.primary"
+                  >
+                    Primary
+                  </v-btn>
+                </div>
+                <div
+                  class="mb-4 text-center"
+                  :class="{ 'mr-4': !isMobile }"
+                >
+                  <v-btn
+                    dark
+                    :color="lightTheme.secondary"
+                  >
+                    Secondary
+                  </v-btn>
+                </div>
+                <div class="mb-4 text-center">
+                  <v-btn
+                    dark
+                    :color="lightTheme.accent"
+                  >
+                    Accent
+                  </v-btn>
+                </div>
+              </v-row>
+              <v-row class="mx-n2 mt-n2 mb-2">
+                <v-col
+                  cols="12"
+                  md="3"
+                  class="pa-2"
+                >
+                  <v-alert
+                    dark
+                    class="mb-0"
+                    :color="lightTheme.info"
+                  >
+                    Info
+                  </v-alert>
+                </v-col>
+                <v-col
+                  cols="12"
+                  md="3"
+                  class="pa-2"
+                >
+                  <v-alert
+                    dark
+                    class="mb-0"
+                    :color="lightTheme.success"
+                  >
+                    Success
+                  </v-alert>
+                </v-col>
+                <v-col
+                  cols="12"
+                  md="3"
+                  class="pa-2"
+                >
+                  <v-alert
+                    dark
+                    class="mb-0"
+                    :color="lightTheme.warning"
+                  >
+                    Warning
+                  </v-alert>
+                </v-col>
+                <v-col
+                  cols="12"
+                  md="3"
+                  class="pa-2"
+                >
+                  <v-alert
+                    dark
+                    class="mb-0"
+                    :color="lightTheme.error"
+                  >
+                    Error
+                  </v-alert>
+                </v-col>
+              </v-row>
+              <v-select
+                v-model="inputStyle"
+                label="Input Style"
+                hide-details
+                class="mb-4"
+                :items="inputStyles"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-select>
+              <v-checkbox
+                v-model="lightTheme.useCustomPrimary"
+                label="Use Custom Primary"
+                hide-details
+                class="mb-4 mt-0"
+                :color="lightTheme.primary"
+              ></v-checkbox>
+              <v-select
+                v-model="lightTheme.primary"
+                v-show="!lightTheme.useCustomPrimary"
+                label="Primary"
+                item-text="name"
+                item-value="value"
+                prepend-icon="mdi-numeric-1-circle"
+                :color="lightTheme.primary"
+                :items="colors"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-select>
+              <v-text-field
+                v-model="lightTheme.primary"
+                v-show="lightTheme.useCustomPrimary"
+                label="Primary"
+                prepend-icon="mdi-numeric-1-circle"
+                :color="lightTheme.primary"
+                :rules="colorRules"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-text-field>
+              <v-checkbox
+                v-model="lightTheme.useCustomSecondary"
+                label="Use Custom Secondary"
+                hide-details
+                class="mb-4 mt-0"
+                :color="lightTheme.secondary"
+              ></v-checkbox>
+              <v-select
+                v-model="lightTheme.secondary"
+                v-show="!lightTheme.useCustomSecondary"
+                label="Secondary"
+                item-text="name"
+                item-value="value"
+                prepend-icon="mdi-numeric-2-circle"
+                :color="lightTheme.secondary"
+                :items="colors"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-select>
+              <v-text-field
+                v-model="lightTheme.secondary"
+                v-show="lightTheme.useCustomSecondary"
+                label="Secondary"
+                prepend-icon="mdi-numeric-2-circle"
+                :color="lightTheme.secondary"
+                :rules="colorRules"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-text-field>
+              <v-checkbox
+                v-model="lightTheme.useCustomAccent"
+                label="Use Custom Accent"
+                hide-details
+                class="mb-4 mt-0"
+                :color="lightTheme.accent"
+              ></v-checkbox>
+              <v-select
+                v-model="lightTheme.accent"
+                v-show="!lightTheme.useCustomAccent"
+                label="Accent"
+                item-text="name"
+                item-value="value"
+                prepend-icon="mdi-numeric-3-circle"
+                :color="lightTheme.accent"
+                :items="colors"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-select>
+              <v-text-field
+                v-model="lightTheme.accent"
+                v-show="lightTheme.useCustomAccent"
+                label="Accent"
+                prepend-icon="mdi-numeric-3-circle"
+                :color="lightTheme.accent"
+                :rules="colorRules"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-text-field>
+              <v-checkbox
+                v-model="lightTheme.useCustomInfo"
+                label="Use Custom Info"
+                hide-details
+                class="mb-4 mt-0"
+                :color="lightTheme.info"
+              ></v-checkbox>
+              <v-select
+                v-model="lightTheme.info"
+                v-show="!lightTheme.useCustomInfo"
+                label="Info"
+                item-text="name"
+                item-value="value"
+                prepend-icon="mdi-information"
+                :color="lightTheme.info"
+                :items="colors"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-select>
+              <v-text-field
+                v-model="lightTheme.info"
+                v-show="lightTheme.useCustomInfo"
+                label="Info"
+                prepend-icon="mdi-information"
+                :color="lightTheme.info"
+                :rules="colorRules"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-text-field>
+              <v-checkbox
+                v-model="lightTheme.useCustomSuccess"
+                label="Use Custom Success"
+                hide-details
+                class="mb-4 mt-0"
+                :color="lightTheme.success"
+              ></v-checkbox>
+              <v-select
+                v-model="lightTheme.success"
+                v-show="!lightTheme.useCustomSuccess"
+                label="Success"
+                item-text="name"
+                item-value="value"
+                prepend-icon="mdi-check-circle"
+                :color="lightTheme.success"
+                :items="colors"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-select>
+              <v-text-field
+                v-model="lightTheme.success"
+                v-show="lightTheme.useCustomSuccess"
+                label="Success"
+                prepend-icon="mdi-check-circle"
+                :color="lightTheme.success"
+                :rules="colorRules"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-text-field>
+              <v-checkbox
+                v-model="lightTheme.useCustomWarning"
+                label="Use Custom Warning"
+                hide-details
+                class="mb-4 mt-0"
+                :color="lightTheme.warning"
+              ></v-checkbox>
+              <v-select
+                v-model="lightTheme.warning"
+                v-show="!lightTheme.useCustomWarning"
+                label="Warning"
+                item-text="name"
+                item-value="value"
+                prepend-icon="mdi-alert"
+                :color="lightTheme.warning"
+                :items="colors"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-select>
+              <v-text-field
+                v-model="lightTheme.warning"
+                v-show="lightTheme.useCustomWarning"
+                label="Warning"
+                prepend-icon="mdi-alert"
+                :color="lightTheme.warning"
+                :rules="colorRules"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-text-field>
+              <v-checkbox
+                v-model="lightTheme.useCustomError"
+                label="Use Custom Error"
+                hide-details
+                class="mb-4 mt-0"
+                :color="lightTheme.error"
+              ></v-checkbox>
+              <v-select
+                v-model="lightTheme.error"
+                v-show="!lightTheme.useCustomError"
+                label="Error"
+                item-text="name"
+                item-value="value"
+                prepend-icon="mdi-alert-octagon"
+                :color="lightTheme.error"
+                :items="colors"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-select>
+              <v-text-field
+                v-model="lightTheme.error"
+                v-show="lightTheme.useCustomError"
+                label="Error"
+                prepend-icon="mdi-alert-octagon"
+                :color="lightTheme.error"
+                :rules="colorRules"
+                :filled="inputStyle === 'filled'"
+                :solo="inputStyle === 'solo'"
+                :solo-inverted="inputStyle === 'solo-inverted'"
+                :outlined="inputStyle === 'outlined'"
+              ></v-text-field>
+            </v-card>
+          </v-col>
+        </v-row>
+        <v-snackbar
+          v-model="showSnackbar"
+          color="success"
+          class="mb-2"
+        >
+          <p class="text-center mb-0">
+            Copied to clipboard
+          </p>
+        </v-snackbar>
+      </v-main>
+    </v-app>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify({
+        theme: {
+          dark: true,
+        },
+      }),
+      data: vm => ({
+        inputStyles: [
+          'default',
+          'filled',
+          'solo',
+          'solo-inverted',
+          'outlined',
+        ],
+        inputStyle: 'default',
+        colors: [
+          {
+            name: 'red',
+            value: '#F44336',
+          },
+          {
+            name: 'red lighten-5',
+            value: '#FFEBEE',
+          },
+          {
+            name: 'red lighten-4',
+            value: '#FFCDD2',
+          },
+          {
+            name: 'red lighten-3',
+            value: '#EF9A9A',
+          },
+          {
+            name: 'red lighten-2',
+            value: '#E57373',
+          },
+          {
+            name: 'red lighten-1',
+            value: '#EF5350',
+          },
+          {
+            name: 'red darken-1',
+            value: '#E53935',
+          },
+          {
+            name: 'red darken-2',
+            value: '#D32F2F',
+          },
+          {
+            name: 'red darken-3',
+            value: '#C62828',
+          },
+          {
+            name: 'red darken-4',
+            value: '#B71C1C',
+          },
+          {
+            name: 'red accent-1',
+            value: '#FF8A80',
+          },
+          {
+            name: 'red accent-2',
+            value: '#FF5252',
+          },
+          {
+            name: 'red accent-3',
+            value: '#FF1744',
+          },
+          {
+            name: 'red accent-4',
+            value: '#D50000',
+          },
+          {
+            name: 'pink',
+            value: '#E91E63',
+          },
+          {
+            name: 'pink lighten-5',
+            value: '#FCE4EC',
+          },
+          {
+            name: 'pink lighten-4',
+            value: '#F8BBD0',
+          },
+          {
+            name: 'pink lighten-3',
+            value: '#F48FB1',
+          },
+          {
+            name: 'pink lighten-2',
+            value: '#F06292',
+          },
+          {
+            name: 'pink lighten-1',
+            value: '#EC407A',
+          },
+          {
+            name: 'pink darken-1',
+            value: '#D81B60',
+          },
+          {
+            name: 'pink darken-2',
+            value: '#C2185B',
+          },
+          {
+            name: 'pink darken-3',
+            value: '#AD1457',
+          },
+          {
+            name: 'pink darken-4',
+            value: '#880E4F',
+          },
+          {
+            name: 'pink accent-1',
+            value: '#FF80AB',
+          },
+          {
+            name: 'pink accent-2',
+            value: '#FF4081',
+          },
+          {
+            name: 'pink accent-3',
+            value: '#F50057',
+          },
+          {
+            name: 'pink accent-4',
+            value: '#C51162',
+          },
+          {
+            name: 'purple',
+            value: '#9C27B0',
+          },
+          {
+            name: 'purple lighten-5',
+            value: '#F3E5F5',
+          },
+          {
+            name: 'purple lighten-4',
+            value: '#E1BEE7',
+          },
+          {
+            name: 'purple lighten-3',
+            value: '#CE93D8',
+          },
+          {
+            name: 'purple lighten-2',
+            value: '#BA68C8',
+          },
+          {
+            name: 'purple lighten-1',
+            value: '#AB47BC',
+          },
+          {
+            name: 'purple darken-1',
+            value: '#8E24AA',
+          },
+          {
+            name: 'purple darken-2',
+            value: '#7B1FA2',
+          },
+          {
+            name: 'purple darken-3',
+            value: '#6A1B9A',
+          },
+          {
+            name: 'purple darken-4',
+            value: '#4A148C',
+          },
+          {
+            name: 'purple accent-1',
+            value: '#EA80FC',
+          },
+          {
+            name: 'purple accent-2',
+            value: '#E040FB',
+          },
+          {
+            name: 'purple accent-3',
+            value: '#D500F9',
+          },
+          {
+            name: 'purple accent-4',
+            value: '#AA00FF',
+          },
+          {
+            name: 'deep-purple',
+            value: '#673AB7',
+          },
+          {
+            name: 'deep-purple lighten-5',
+            value: '#EDE7F6',
+          },
+          {
+            name: 'deep-purple lighten-4',
+            value: '#D1C4E9',
+          },
+          {
+            name: 'deep-purple lighten-3',
+            value: '#B39DDB',
+          },
+          {
+            name: 'deep-purple lighten-2',
+            value: '#9575CD',
+          },
+          {
+            name: 'deep-purple lighten-1',
+            value: '#7E57C2',
+          },
+          {
+            name: 'deep-purple darken-1',
+            value: '#5E35B1',
+          },
+          {
+            name: 'deep-purple darken-2',
+            value: '#512DA8',
+          },
+          {
+            name: 'deep-purple darken-3',
+            value: '#4527A0',
+          },
+          {
+            name: 'deep-purple darken-4',
+            value: '#311B92',
+          },
+          {
+            name: 'deep-purple accent-1',
+            value: '#B388FF',
+          },
+          {
+            name: 'deep-purple accent-2',
+            value: '#7C4DFF',
+          },
+          {
+            name: 'deep-purple accent-3',
+            value: '#651FFF',
+          },
+          {
+            name: 'deep-purple accent-4',
+            value: '#6200EA',
+          },
+          {
+            name: 'indigo',
+            value: '#3F51B5',
+          },
+          {
+            name: 'indigo lighten-5',
+            value: '#E8EAF6',
+          },
+          {
+            name: 'indigo lighten-4',
+            value: '#C5CAE9',
+          },
+          {
+            name: 'indigo lighten-3',
+            value: '#9FA8DA',
+          },
+          {
+            name: 'indigo lighten-2',
+            value: '#7986CB',
+          },
+          {
+            name: 'indigo lighten-1',
+            value: '#5C6BC0',
+          },
+          {
+            name: 'indigo darken-1',
+            value: '#3949AB',
+          },
+          {
+            name: 'indigo darken-2',
+            value: '#303F9F',
+          },
+          {
+            name: 'indigo darken-3',
+            value: '#283593',
+          },
+          {
+            name: 'indigo darken-4',
+            value: '#1A237E',
+          },
+          {
+            name: 'indigo accent-1',
+            value: '#8C9EFF',
+          },
+          {
+            name: 'indigo accent-2',
+            value: '#536DFE',
+          },
+          {
+            name: 'indigo accent-3',
+            value: '#3D5AFE',
+          },
+          {
+            name: 'indigo accent-4',
+            value: '#304FFE',
+          },
+          {
+            name: 'blue',
+            value: '#2196F3',
+          },
+          {
+            name: 'blue lighten-5',
+            value: '#E3F2FD',
+          },
+          {
+            name: 'blue lighten-4',
+            value: '#BBDEFB',
+          },
+          {
+            name: 'blue lighten-3',
+            value: '#90CAF9',
+          },
+          {
+            name: 'blue lighten-2',
+            value: '#64B5F6',
+          },
+          {
+            name: 'blue lighten-1',
+            value: '#42A5F5',
+          },
+          {
+            name: 'blue darken-1',
+            value: '#1E88E5',
+          },
+          {
+            name: 'blue darken-2',
+            value: '#1976D2',
+          },
+          {
+            name: 'blue darken-3',
+            value: '#1565C0',
+          },
+          {
+            name: 'blue darken-4',
+            value: '#0D47A1',
+          },
+          {
+            name: 'blue accent-1',
+            value: '#82B1FF',
+          },
+          {
+            name: 'blue accent-2',
+            value: '#448AFF',
+          },
+          {
+            name: 'blue accent-3',
+            value: '#2979FF',
+          },
+          {
+            name: 'blue accent-4',
+            value: '#2962FF',
+          },
+          {
+            name: 'light-blue',
+            value: '#03A9F4',
+          },
+          {
+            name: 'light-blue lighten-5',
+            value: '#E1F5FE',
+          },
+          {
+            name: 'light-blue lighten-4',
+            value: '#B3E5FC',
+          },
+          {
+            name: 'light-blue lighten-3',
+            value: '#81D4FA',
+          },
+          {
+            name: 'light-blue lighten-2',
+            value: '#4FC3F7',
+          },
+          {
+            name: 'light-blue lighten-1',
+            value: '#29B6F6',
+          },
+          {
+            name: 'light-blue darken-1',
+            value: '#039BE5',
+          },
+          {
+            name: 'light-blue darken-2',
+            value: '#0288D1',
+          },
+          {
+            name: 'light-blue darken-3',
+            value: '#0277BD',
+          },
+          {
+            name: 'light-blue darken-4',
+            value: '#01579B',
+          },
+          {
+            name: 'light-blue accent-1',
+            value: '#80D8FF',
+          },
+          {
+            name: 'light-blue accent-2',
+            value: '#40C4FF',
+          },
+          {
+            name: 'light-blue accent-3',
+            value: '#00B0FF',
+          },
+          {
+            name: 'light-blue accent-4',
+            value: '#0091EA',
+          },
+          {
+            name: 'cyan',
+            value: '#00BCD4',
+          },
+          {
+            name: 'cyan lighten-5',
+            value: '#E0F7FA',
+          },
+          {
+            name: 'cyan lighten-4',
+            value: '#B2EBF2',
+          },
+          {
+            name: 'cyan lighten-3',
+            value: '#80DEEA',
+          },
+          {
+            name: 'cyan lighten-2',
+            value: '#4DD0E1',
+          },
+          {
+            name: 'cyan lighten-1',
+            value: '#26C6DA',
+          },
+          {
+            name: 'cyan darken-1',
+            value: '#00ACC1',
+          },
+          {
+            name: 'cyan darken-2',
+            value: '#0097A7',
+          },
+          {
+            name: 'cyan darken-3',
+            value: '#00838F',
+          },
+          {
+            name: 'cyan darken-4',
+            value: '#006064',
+          },
+          {
+            name: 'cyan accent-1',
+            value: '#84FFFF',
+          },
+          {
+            name: 'cyan accent-2',
+            value: '#18FFFF',
+          },
+          {
+            name: 'cyan accent-3',
+            value: '#00E5FF',
+          },
+          {
+            name: 'cyan accent-4',
+            value: '#00B8D4',
+          },
+          {
+            name: 'teal',
+            value: '#009688',
+          },
+          {
+            name: 'teal lighten-5',
+            value: '#E0F2F1',
+          },
+          {
+            name: 'teal lighten-4',
+            value: '#B2DFDB',
+          },
+          {
+            name: 'teal lighten-3',
+            value: '#80CBC4',
+          },
+          {
+            name: 'teal lighten-2',
+            value: '#4DB6AC',
+          },
+          {
+            name: 'teal lighten-1',
+            value: '#26A69A',
+          },
+          {
+            name: 'teal darken-1',
+            value: '#00897B',
+          },
+          {
+            name: 'teal darken-2',
+            value: '#00796B',
+          },
+          {
+            name: 'teal darken-3',
+            value: '#00695C',
+          },
+          {
+            name: 'teal darken-4',
+            value: '#004D40',
+          },
+          {
+            name: 'teal accent-1',
+            value: '#A7FFEB',
+          },
+          {
+            name: 'teal accent-2',
+            value: '#64FFDA',
+          },
+          {
+            name: 'teal accent-3',
+            value: '#1DE9B6',
+          },
+          {
+            name: 'teal accent-4',
+            value: '#00BFA5',
+          },
+          {
+            name: 'green',
+            value: '#4CAF50',
+          },
+          {
+            name: 'green lighten-5',
+            value: '#E8F5E9',
+          },
+          {
+            name: 'green lighten-4',
+            value: '#C8E6C9',
+          },
+          {
+            name: 'green lighten-3',
+            value: '#A5D6A7',
+          },
+          {
+            name: 'green lighten-2',
+            value: '#81C784',
+          },
+          {
+            name: 'green lighten-1',
+            value: '#66BB6A',
+          },
+          {
+            name: 'green darken-1',
+            value: '#43A047',
+          },
+          {
+            name: 'green darken-2',
+            value: '#388E3C',
+          },
+          {
+            name: 'green darken-3',
+            value: '#2E7D32',
+          },
+          {
+            name: 'green darken-4',
+            value: '#1B5E20',
+          },
+          {
+            name: 'green accent-1',
+            value: '#B9F6CA',
+          },
+          {
+            name: 'green accent-2',
+            value: '#69F0AE',
+          },
+          {
+            name: 'green accent-3',
+            value: '#00E676',
+          },
+          {
+            name: 'green accent-4',
+            value: '#00C853',
+          },
+          {
+            name: 'light-green',
+            value: '#8BC34A',
+          },
+          {
+            name: 'light-green lighten-5',
+            value: '#F1F8E9',
+          },
+          {
+            name: 'light-green lighten-4',
+            value: '#DCEDC8',
+          },
+          {
+            name: 'light-green lighten-3',
+            value: '#C5E1A5',
+          },
+          {
+            name: 'light-green lighten-2',
+            value: '#AED581',
+          },
+          {
+            name: 'light-green lighten-1',
+            value: '#9CCC65',
+          },
+          {
+            name: 'light-green darken-1',
+            value: '#7CB342',
+          },
+          {
+            name: 'light-green darken-2',
+            value: '#689F38',
+          },
+          {
+            name: 'light-green darken-3',
+            value: '#558B2F',
+          },
+          {
+            name: 'light-green darken-4',
+            value: '#33691E',
+          },
+          {
+            name: 'light-green accent-1',
+            value: '#CCFF90',
+          },
+          {
+            name: 'light-green accent-2',
+            value: '#B2FF59',
+          },
+          {
+            name: 'light-green accent-3',
+            value: '#76FF03',
+          },
+          {
+            name: 'light-green accent-4',
+            value: '#64DD17',
+          },
+          {
+            name: 'lime',
+            value: '#CDDC39',
+          },
+          {
+            name: 'lime lighten-5',
+            value: '#F9FBE7',
+          },
+          {
+            name: 'lime lighten-4',
+            value: '#F0F4C3',
+          },
+          {
+            name: 'lime lighten-3',
+            value: '#E6EE9C',
+          },
+          {
+            name: 'lime lighten-2',
+            value: '#DCE775',
+          },
+          {
+            name: 'lime lighten-1',
+            value: '#D4E157',
+          },
+          {
+            name: 'lime darken-1',
+            value: '#C0CA33',
+          },
+          {
+            name: 'lime darken-2',
+            value: '#AFB42B',
+          },
+          {
+            name: 'lime darken-3',
+            value: '#9E9D24',
+          },
+          {
+            name: 'lime darken-4',
+            value: '#827717',
+          },
+          {
+            name: 'lime accent-1',
+            value: '#F4FF81',
+          },
+          {
+            name: 'lime accent-2',
+            value: '#EEFF41',
+          },
+          {
+            name: 'lime accent-3',
+            value: '#C6FF00',
+          },
+          {
+            name: 'lime accent-4',
+            value: '#AEEA00',
+          },
+          {
+            name: 'yellow',
+            value: '#FFEB3B',
+          },
+          {
+            name: 'yellow lighten-5',
+            value: '#FFFDE7',
+          },
+          {
+            name: 'yellow lighten-4',
+            value: '#FFF9C4',
+          },
+          {
+            name: 'yellow lighten-3',
+            value: '#FFF59D',
+          },
+          {
+            name: 'yellow lighten-2',
+            value: '#FFF176',
+          },
+          {
+            name: 'yellow lighten-1',
+            value: '#FFEE58',
+          },
+          {
+            name: 'yellow darken-1',
+            value: '#FDD835',
+          },
+          {
+            name: 'yellow darken-2',
+            value: '#FBC02D',
+          },
+          {
+            name: 'yellow darken-3',
+            value: '#F9A825',
+          },
+          {
+            name: 'yellow darken-4',
+            value: '#F57F17',
+          },
+          {
+            name: 'yellow accent-1',
+            value: '#FFFF8D',
+          },
+          {
+            name: 'yellow accent-2',
+            value: '#FFFF00',
+          },
+          {
+            name: 'yellow accent-3',
+            value: '#FFEA00',
+          },
+          {
+            name: 'yellow accent-4',
+            value: '#FFD600',
+          },
+          {
+            name: 'amber',
+            value: '#FFC107',
+          },
+          {
+            name: 'amber lighten-5',
+            value: '#FFF8E1',
+          },
+          {
+            name: 'amber lighten-4',
+            value: '#FFECB3',
+          },
+          {
+            name: 'amber lighten-3',
+            value: '#FFE082',
+          },
+          {
+            name: 'amber lighten-2',
+            value: '#FFD54F',
+          },
+          {
+            name: 'amber lighten-1',
+            value: '#FFCA28',
+          },
+          {
+            name: 'amber darken-1',
+            value: '#FFB300',
+          },
+          {
+            name: 'amber darken-2',
+            value: '#FFA000',
+          },
+          {
+            name: 'amber darken-3',
+            value: '#FF8F00',
+          },
+          {
+            name: 'amber darken-4',
+            value: '#FF6F00',
+          },
+          {
+            name: 'amber accent-1',
+            value: '#FFE57F',
+          },
+          {
+            name: 'amber accent-2',
+            value: '#FFD740',
+          },
+          {
+            name: 'amber accent-3',
+            value: '#FFC400',
+          },
+          {
+            name: 'amber accent-4',
+            value: '#FFAB00',
+          },
+          {
+            name: 'orange',
+            value: '#FF9800',
+          },
+          {
+            name: 'orange lighten-5',
+            value: '#FFF3E0',
+          },
+          {
+            name: 'orange lighten-4',
+            value: '#FFE0B2',
+          },
+          {
+            name: 'orange lighten-3',
+            value: '#FFCC80',
+          },
+          {
+            name: 'orange lighten-2',
+            value: '#FFB74D',
+          },
+          {
+            name: 'orange lighten-1',
+            value: '#FFA726',
+          },
+          {
+            name: 'orange darken-1',
+            value: '#FB8C00',
+          },
+          {
+            name: 'orange darken-2',
+            value: '#F57C00',
+          },
+          {
+            name: 'orange darken-3',
+            value: '#EF6C00',
+          },
+          {
+            name: 'orange darken-4',
+            value: '#E65100',
+          },
+          {
+            name: 'orange accent-1',
+            value: '#FFD180',
+          },
+          {
+            name: 'orange accent-2',
+            value: '#FFAB40',
+          },
+          {
+            name: 'orange accent-3',
+            value: '#FF9100',
+          },
+          {
+            name: 'orange accent-4',
+            value: '#FF6D00',
+          },
+          {
+            name: 'deep-orange',
+            value: '#FF5722',
+          },
+          {
+            name: 'deep-orange lighten-5',
+            value: '#FBE9E7',
+          },
+          {
+            name: 'deep-orange lighten-4',
+            value: '#FFCCBC',
+          },
+          {
+            name: 'deep-orange lighten-3',
+            value: '#FFAB91',
+          },
+          {
+            name: 'deep-orange lighten-2',
+            value: '#FF8A65',
+          },
+          {
+            name: 'deep-orange lighten-1',
+            value: '#FF7043',
+          },
+          {
+            name: 'deep-orange darken-1',
+            value: '#F4511E',
+          },
+          {
+            name: 'deep-orange darken-2',
+            value: '#E64A19',
+          },
+          {
+            name: 'deep-orange darken-3',
+            value: '#D84315',
+          },
+          {
+            name: 'deep-orange darken-4',
+            value: '#BF360C',
+          },
+          {
+            name: 'deep-orange accent-1',
+            value: '#FF9E80',
+          },
+          {
+            name: 'deep-orange accent-2',
+            value: '#FF6E40',
+          },
+          {
+            name: 'deep-orange accent-3',
+            value: '#FF3D00',
+          },
+          {
+            name: 'deep-orange accent-4',
+            value: '#DD2C00',
+          },
+          {
+            name: 'brown',
+            value: '#795548',
+          },
+          {
+            name: 'brown lighten-5',
+            value: '#EFEBE9',
+          },
+          {
+            name: 'brown lighten-4',
+            value: '#D7CCC8',
+          },
+          {
+            name: 'brown lighten-3',
+            value: '#BCAAA4',
+          },
+          {
+            name: 'brown lighten-2',
+            value: '#A1887F',
+          },
+          {
+            name: 'brown lighten-1',
+            value: '#8D6E63',
+          },
+          {
+            name: 'brown darken-1',
+            value: '#6D4C41',
+          },
+          {
+            name: 'brown darken-2',
+            value: '#5D4037',
+          },
+          {
+            name: 'brown darken-3',
+            value: '#4E342E',
+          },
+          {
+            name: 'brown darken-4',
+            value: '#3E2723',
+          },
+          {
+            name: 'blue-grey',
+            value: '#607D8B',
+          },
+          {
+            name: 'blue-grey lighten-5',
+            value: '#ECEFF1',
+          },
+          {
+            name: 'blue-grey lighten-4',
+            value: '#CFD8DC',
+          },
+          {
+            name: 'blue-grey lighten-3',
+            value: '#B0BEC5',
+          },
+          {
+            name: 'blue-grey lighten-2',
+            value: '#90A4AE',
+          },
+          {
+            name: 'blue-grey lighten-1',
+            value: '#78909C',
+          },
+          {
+            name: 'blue-grey darken-1',
+            value: '#546E7A',
+          },
+          {
+            name: 'blue-grey darken-2',
+            value: '#455A64',
+          },
+          {
+            name: 'blue-grey darken-3',
+            value: '#37474F',
+          },
+          {
+            name: 'blue-grey darken-4',
+            value: '#263238',
+          },
+          {
+            name: 'grey',
+            value: '#9E9E9E',
+          },
+          {
+            name: 'grey lighten-5',
+            value: '#FAFAFA',
+          },
+          {
+            name: 'grey lighten-4',
+            value: '#F5F5F5',
+          },
+          {
+            name: 'grey lighten-3',
+            value: '#EEEEEE',
+          },
+          {
+            name: 'grey lighten-2',
+            value: '#E0E0E0',
+          },
+          {
+            name: 'grey lighten-1',
+            value: '#BDBDBD',
+          },
+          {
+            name: 'grey darken-1',
+            value: '#757575',
+          },
+          {
+            name: 'grey darken-2',
+            value: '#616161',
+          },
+          {
+            name: 'grey darken-3',
+            value: '#424242',
+          },
+          {
+            name: 'grey darken-4',
+            value: '#212121',
+          },
+          {
+            name: 'black',
+            value: '#000000',
+          },
+          {
+            name: 'white',
+            value: '#FFFFFF',
+          },
+        ],
+        colorRules: [
+          v => !!v || 'Required',
+          v => !v || /^#[0-9a-fA-F]{6}$/.test(v) || 'Hexadecimal format required (#FFFFFF)',
+        ],
+        darkTheme: {
+          useCustomPrimary: false,
+          primary: vm.$vuetify.theme.themes.dark.primary,
+          useCustomSecondary: false,
+          secondary: vm.$vuetify.theme.themes.dark.secondary,
+          useCustomAccent: false,
+          accent: vm.$vuetify.theme.themes.dark.accent,
+          useCustomInfo: false,
+          info: vm.$vuetify.theme.themes.dark.info,
+          useCustomSuccess: false,
+          success: vm.$vuetify.theme.themes.dark.success,
+          useCustomWarning: false,
+          warning: vm.$vuetify.theme.themes.dark.warning,
+          useCustomError: false,
+          error: vm.$vuetify.theme.themes.dark.error,
+        },
+        lightTheme: {
+          useCustomPrimary: false,
+          primary: vm.$vuetify.theme.themes.light.primary,
+          useCustomSecondary: false,
+          secondary: vm.$vuetify.theme.themes.light.secondary,
+          useCustomAccent: false,
+          accent: vm.$vuetify.theme.themes.light.accent,
+          useCustomInfo: false,
+          info: vm.$vuetify.theme.themes.light.info,
+          useCustomSuccess: false,
+          success: vm.$vuetify.theme.themes.light.success,
+          useCustomWarning: false,
+          warning: vm.$vuetify.theme.themes.light.warning,
+          useCustomError: false,
+          error: vm.$vuetify.theme.themes.light.error,
+        },
+        showSnackbar: false,
+      }),
+      computed: {
+        isMobile() {
+          return this.$vuetify.breakpoint.mobile
+        },
+      },
+      methods: {
+        formatTheme(theme) {
+          return `{\n\tprimary: '${theme.primary}',\n\tsecondary: '${theme.secondary}',\n\taccent: '${theme.accent}',\n\tinfo: '${theme.info}',\n\tsuccess: '${theme.success}',\n\twarning: '${theme.warning}',\n\terror: '${theme.error}',\n}`
+        },
+        async copyTheme(theme) {
+          await navigator.clipboard.writeText(this.formatTheme(theme))
+          this.showSnackbar = true
+        },
+      },
+    })
+  </script>
+</body>
+</html>
